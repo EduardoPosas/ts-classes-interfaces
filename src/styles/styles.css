@@ -1,0 +1,31 @@
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-size: 1.6rem;
+  padding: 5rem;
+}
+
+h1 {
+  font-size: 3.2rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+button {
+  all: unset;
+  background-color:darkblue;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+}
