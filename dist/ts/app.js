@@ -1,25 +1,27 @@
 "use strict";
 console.log('Classes and Interfaces');
-/**
- * Defining a class and an instance
-*/
 class Department {
-    constructor(name) {
+    constructor(id, name) {
+        this.id = id;
         this.name = name;
+        this.employees = [];
     }
-    // constructor functions
     describe() {
-        console.log(`Department: ${this.name}`);
+        console.log(`Department ${this.id}: ${this.name}`);
+    }
+    addEmloyee(employee) {
+        this.employees.push(employee);
+    }
+    printEmployeesInfo() {
+        console.log(`Total de empleados: ${this.employees.length}`);
+        console.log(this.employees);
     }
 }
-const accounting = new Department('Accounting');
-console.log(accounting); // object
+const accounting = new Department('d1', 'Accounting');
+console.log(accounting);
 accounting.describe();
-// this keyword
-// const accountingCopy = { describe: accounting.describe } // this is refering to accounting copy
-// accountingCopy.describe(); // undefined
-// const accountingCopy = { describe: accounting.describe }; // don´t have the correct type structure
-// accountingCopy.describe(); // error, type Department
-const accountingCopy = { name: 'Some name', describe: accounting.describe };
-accountingCopy.describe();
+console.log(accounting.name);
+accounting.addEmloyee('Alex');
+accounting.addEmloyee('Bernard');
+accounting.printEmployeesInfo();
 //# sourceMappingURL=app.js.map
