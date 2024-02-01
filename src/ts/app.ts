@@ -1,60 +1,94 @@
-console.log('Classes and Interfaces');
-
 /**
- * Defining a class and an instance
-*/
+ * Class inheritance
+ * protected access modifier: is like private, but you can access to it in the subclasess
+ * Getters and Setters
+ */
 
-class Department {
-  // public name: string; // can use public keyword, but it´s the default
-  // name: string;
-  // private readonly id: string
-  private employees: string[] = []; // private prop
+class DepartmentBase {
+  protected employees: string[] = [];
 
-  // constructor(name: string, id: string) {
-  //   this.name = name;
-  //   this.id = id;
-  // }
+  constructor(private id: string, public name: string) { }
 
-  //shorthand initialization
-  // create property with the extact name without assigning it in the constructor
-  // explicitly assign the public or private
-  constructor(private readonly id: string, public name: string) { }
-
-  // constructor functions
-  describe(this: Department) {
-    // console.log(`Department: ${this.name}`);
-    console.log(`Department ${this.id}: ${this.name}`)
-  }
-
-  addEmloyee(employee: string) {
+  addEmployee(employee: string) {
     this.employees.push(employee);
   }
 
-  printEmployeesInfo() {
-    // this.id = 'd2' // cannot re-assign because it is a readonly prop
-    console.log(`Total de empleados: ${this.employees.length}`);
-    console.log(this.employees);
+  printEmployeesDetails() {
+    console.log(`Total de empleados: ${this.employees.length}`)
+    console.log(this.employees)
   }
 }
 
-const accounting = new Department('d1', 'Accounting');
-console.log(accounting); // object
-accounting.describe();
+class Accounting extends DepartmentBase {
+  public admins: string[] = [];
 
-/** this keyword */
-// const accountingCopy = { describe: accounting.describe } // this is refering to accounting copy
-// accountingCopy.describe(); // undefined
+  constructor(id: string) {
+    super(id, 'Accounting')
+  }
 
-// const accountingCopy = { describe: accounting.describe }; // don´t have the correct type structure
-// accountingCopy.describe(); // error, type Department
+  addAdmin(admin: string) {
+    this.admins.push(admin);
+  }
 
-// const accountingCopy = { name: 'Some name', describe: accounting.describe };
-// accountingCopy.describe(); // ok
+  printAdminDetails() {
+    console.log(`Total de administradores: ${this.admins.length}`);
+    console.log(this.admins);
+  }
+}
 
-/** Public and private */
-// console.log(accounting.employees); // error - private prop
-console.log(accounting.name); // ok - public prop, also can modify the value
-accounting.addEmloyee('Alex');
-accounting.addEmloyee('Bernard');
+class ITDepartment extends DepartmentBase {
+  private reports: string[] = [];
+  private lastReport: string;
 
-accounting.printEmployeesInfo();
+  constructor(id: string) {
+    super(id, 'IT Department');
+    this.lastReport = this.reports[0];
+  }
+
+  // Overriding a method from base class
+  addEmployee(employee: string) {
+    if (employee === 'Alex') {
+      return
+    }
+    this.employees.push(employee); // have access to employee from base class, using protected
+  }
+
+  addReport(report: string) {
+    this.reports.unshift(report)
+    this.lastReport = this.reports[0]
+  }
+  printReports() {
+    console.log(this.reports);
+  }
+
+  get mostRecentReport() {
+    if (!this.lastReport) {
+      throw new Error('Reporte no encontrado')
+    }
+    return this.lastReport;
+  }
+  set mostRecentReport(value: string) {
+    if (!value) {
+      throw new Error('Pasa un valor valido');
+    }
+    this.addReport(value);
+  }
+}
+
+const it = new ITDepartment('d1');
+it.addEmployee('Alexander');
+it.addReport('reporte de junio');
+it.printReports();
+it.addEmployee('Alex');
+it.addEmployee('Brumm');
+it.printEmployeesDetails();
+
+// Getters and setters
+it.mostRecentReport = 'Reporte final de año'; // assigne a value as a property
+console.log(it.mostRecentReport); // not call the function ()
+
+const account = new Accounting('d2');
+account.addEmployee('Bernard');
+account.printEmployeesDetails();
+account.addAdmin('Ruth');
+account.printAdminDetails();
