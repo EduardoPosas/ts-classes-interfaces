@@ -2,12 +2,28 @@
  * Class inheritance
  * protected access modifier: is like private, but you can access to it in the subclasess
  * Getters and Setters
+ * Static method: can be used without an instance of the class
+ * static prop: can be used without an instance of the class
+ * 
+ * Abstract class: can´t be instanciated, just inherited
+ * abstract method or prop: just define the method or property and its declartion type in abstract class
+ * and force other classes implementing it
  */
 
-class DepartmentBase {
+abstract class DepartmentBase {
   protected employees: string[] = [];
+  // Static prop
+  static fiscalYear = 2020;
 
-  constructor(private id: string, public name: string) { }
+  constructor(protected id: string, public name: string) {
+    // Can´t call a static property with this
+    // this.fiscalYear = 2024; // error
+    // Can use directly with the Class name or in static functions
+    DepartmentBase.fiscalYear = 2024;
+  }
+
+  // Abstact method
+  abstract describe(): void;
 
   addEmployee(employee: string) {
     this.employees.push(employee);
@@ -17,6 +33,12 @@ class DepartmentBase {
     console.log(`Total de empleados: ${this.employees.length}`)
     console.log(this.employees)
   }
+
+  // Método estático
+  static createEmployee(name: string) {
+    console.log(DepartmentBase.fiscalYear);
+    return { name };
+  }
 }
 
 class Accounting extends DepartmentBase {
@@ -24,6 +46,11 @@ class Accounting extends DepartmentBase {
 
   constructor(id: string) {
     super(id, 'Accounting')
+  }
+
+  // Requiered method
+  describe() {
+    console.log(`Department: ${this.name} with id: ${this.id}`)
   }
 
   addAdmin(admin: string) {
@@ -43,6 +70,11 @@ class ITDepartment extends DepartmentBase {
   constructor(id: string) {
     super(id, 'IT Department');
     this.lastReport = this.reports[0];
+  }
+
+  // Requiered method
+  describe() {
+    console.log(`Department: ${this.name} with id: ${this.id}`)
   }
 
   // Overriding a method from base class
@@ -92,3 +124,8 @@ account.addEmployee('Bernard');
 account.printEmployeesDetails();
 account.addAdmin('Ruth');
 account.printAdminDetails();
+
+// Static method
+const newEmployee = DepartmentBase.createEmployee('alexander');
+console.log(newEmployee);
+console.log(DepartmentBase.fiscalYear);

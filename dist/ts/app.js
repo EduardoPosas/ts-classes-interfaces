@@ -4,6 +4,7 @@ class DepartmentBase {
         this.id = id;
         this.name = name;
         this.employees = [];
+        DepartmentBase.fiscalYear = 2024;
     }
     addEmployee(employee) {
         this.employees.push(employee);
@@ -12,11 +13,19 @@ class DepartmentBase {
         console.log(`Total de empleados: ${this.employees.length}`);
         console.log(this.employees);
     }
+    static createEmployee(name) {
+        console.log(DepartmentBase.fiscalYear);
+        return { name };
+    }
 }
+DepartmentBase.fiscalYear = 2020;
 class Accounting extends DepartmentBase {
     constructor(id) {
         super(id, 'Accounting');
         this.admins = [];
+    }
+    describe() {
+        console.log(`Department: ${this.name} with id: ${this.id}`);
     }
     addAdmin(admin) {
         this.admins.push(admin);
@@ -31,6 +40,9 @@ class ITDepartment extends DepartmentBase {
         super(id, 'IT Department');
         this.reports = [];
         this.lastReport = this.reports[0];
+    }
+    describe() {
+        console.log(`Department: ${this.name} with id: ${this.id}`);
     }
     addEmployee(employee) {
         if (employee === 'Alex') {
@@ -72,4 +84,7 @@ account.addEmployee('Bernard');
 account.printEmployeesDetails();
 account.addAdmin('Ruth');
 account.printAdminDetails();
+const newEmployee = DepartmentBase.createEmployee('alexander');
+console.log(newEmployee);
+console.log(DepartmentBase.fiscalYear);
 //# sourceMappingURL=app.js.map
