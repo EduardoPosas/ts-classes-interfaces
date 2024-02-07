@@ -1,142 +1,124 @@
-/**
- * Class inheritance
- * protected access modifier: is like private, but you can access to it in the subclasess
- * Getters and Setters
- * Static method: can be used without an instance of the class
- * static prop: can be used without an instance of the class
- * 
- * Abstract class: can´t be instanciated, just inherited
- * abstract method or prop: just define the method or property and its declartion type in abstract class
- * and force other classes implementing it
+/** Interfaces
+ * It´s another way to name an object type
+ * Define a custom type
+ * Type aliases and interfaces are very similar, and in many cases you can choose between them freely.
  */
 
-abstract class DepartmentBase {
-  protected employees: string[] = [];
-  // Static prop
-  static fiscalYear = 2020;
+interface User {
+  name: string;
+  age: number;
+  greet(phrase: string): void;
+}
 
-  constructor(protected id: string, public name: string) {
-    // Can´t call a static property with this
-    // this.fiscalYear = 2024; // error
-    // Can use directly with the Class name or in static functions
-    DepartmentBase.fiscalYear = 2024;
-  }
+// with Type alias
+// type User = {
+//   readonly name: string;
+//   age: number;
+//   greet(phrase: string): void;
+// }
 
-  // Abstact method
-  abstract describe(): void;
 
-  addEmployee(employee: string) {
-    this.employees.push(employee);
-  }
+let user1: User;
 
-  printEmployeesDetails() {
-    console.log(`Total de empleados: ${this.employees.length}`)
-    console.log(this.employees)
-  }
-
-  // Método estático
-  static createEmployee(name: string) {
-    console.log(DepartmentBase.fiscalYear);
-    return { name };
+user1 = {
+  name: 'Alexander',
+  age: 27,
+  greet(phrase: string) {
+    console.log(`${phrase} ${this.name}`)
   }
 }
 
-class Accounting extends DepartmentBase {
-  public admins: string[] = [];
-  private static instance: Accounting;
+console.log(user1);
+user1.greet('Buenos días');
 
-  private constructor(id: string) {
-    super(id, 'Accounting')
-  }
+/** Interfaces and classes 
+ * A class must follow the custom type
+ * It forces to implemet methods defined in the interface
+ * it can use a type alias
+*/
 
-  // Singleton Pattern
-  static getInstance() {
-    if (Accounting.instance) {
-      return this.instance;
+/** Optionanl proprs and fn */
+
+interface Greetable {
+  readonly name?: string; // optional name
+  greet(phrase: string): void;
+}
+
+// A class can implement from multiple interfaces
+class Person implements Greetable {
+  public name?: string;
+  public age: number;
+
+  constructor(a: number, n?: string) { // optional param in constructor, or default value
+    this.age = a;
+    if (n) {
+      this.name = n;
     }
-    this.instance = new Accounting('d2');
-    return this.instance;
   }
 
-  // Requiered method
-  describe() {
-    console.log(`Department: ${this.name} with id: ${this.id}`)
-  }
-
-  addAdmin(admin: string) {
-    this.admins.push(admin);
-  }
-
-  printAdminDetails() {
-    console.log(`Total de administradores: ${this.admins.length}`);
-    console.log(this.admins);
+  greet(phrase: string) {
+    if (this.name) {
+      console.log(`${phrase} ${this.name}`)
+    } else {
+      console.log('hi');
+    }
   }
 }
 
-class ITDepartment extends DepartmentBase {
-  private reports: string[] = [];
-  private lastReport: string;
+let user2: Greetable;
+user2 = new Person(28); // can use Greetable custom type because the class is implemented with it
 
-  constructor(id: string) {
-    super(id, 'IT Department');
-    this.lastReport = this.reports[0];
-  }
+console.log(user2);
+user2.greet('Me llamó');
 
-  // Requiered method
-  describe() {
-    console.log(`Department: ${this.name} with id: ${this.id}`)
-  }
+// trying to change a readonly prop
+// user2.name = 'lalo'; // error 
 
-  // Overriding a method from base class
-  addEmployee(employee: string) {
-    if (employee === 'Alex') {
-      return
-    }
-    this.employees.push(employee); // have access to employee from base class, using protected
-  }
+/**Extending Interfaces */
 
-  addReport(report: string) {
-    this.reports.unshift(report)
-    this.lastReport = this.reports[0]
-  }
-  printReports() {
-    console.log(this.reports);
-  }
+interface Named {
+  readonly name: string;
+}
 
-  get mostRecentReport() {
-    if (!this.lastReport) {
-      throw new Error('Reporte no encontrado')
-    }
-    return this.lastReport;
-  }
-  set mostRecentReport(value: string) {
-    if (!value) {
-      throw new Error('Pasa un valor valido');
-    }
-    this.addReport(value);
+interface Aged {
+  readonly age: number;
+}
+
+interface Information extends Named, Aged {
+  showInfo(): void;
+}
+
+class Employee implements Information {
+  constructor(public name: string, public age: number) { }
+
+  showInfo() {
+    console.log(`Empleado: ${this.name} tiene ${this.age} de edad`);
   }
 }
 
-const it = new ITDepartment('d1');
-it.addEmployee('Alexander');
-it.addReport('reporte de junio');
-it.printReports();
-it.addEmployee('Alex');
-it.addEmployee('Brumm');
-it.printEmployeesDetails();
+let employee: Named;
 
-// Getters and setters
-it.mostRecentReport = 'Reporte final de año'; // assigne a value as a property
-console.log(it.mostRecentReport); // not call the function ()
+employee = new Employee('Fabio', 40);
+console.log(employee);
+// employee.showInfo() // error, showInfo does not exist in the type Named
 
-// const account = new Accounting('d2');
-const account = Accounting.getInstance();
-account.addEmployee('Bernard');
-account.printEmployeesDetails();
-account.addAdmin('Ruth');
-account.printAdminDetails();
+let employee2: Information;
 
-// Static method
-const newEmployee = DepartmentBase.createEmployee('alexander');
-console.log(newEmployee);
-console.log(DepartmentBase.fiscalYear);
+employee2 = new Employee('Ford', 18);
+employee2.showInfo();
+
+
+// Interfaces as custom types
+// At the end functions are objects
+// also called an anonymous function
+// type AddFn = {
+//   (a: number, b: number): number;
+// 
+
+interface AddFn {
+  (a: number, b: number): number;
+}
+
+let add: AddFn = (n1: number, n2: number) => n1 + n2;
+
+console.log(add(25, 200));
