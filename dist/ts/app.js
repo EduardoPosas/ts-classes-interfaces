@@ -24,6 +24,13 @@ class Accounting extends DepartmentBase {
         super(id, 'Accounting');
         this.admins = [];
     }
+    static getInstance() {
+        if (Accounting.instance) {
+            return this.instance;
+        }
+        this.instance = new Accounting('d2');
+        return this.instance;
+    }
     describe() {
         console.log(`Department: ${this.name} with id: ${this.id}`);
     }
@@ -79,7 +86,7 @@ it.addEmployee('Brumm');
 it.printEmployeesDetails();
 it.mostRecentReport = 'Reporte final de año';
 console.log(it.mostRecentReport);
-const account = new Accounting('d2');
+const account = Accounting.getInstance();
 account.addEmployee('Bernard');
 account.printEmployeesDetails();
 account.addAdmin('Ruth');

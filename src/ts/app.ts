@@ -43,9 +43,19 @@ abstract class DepartmentBase {
 
 class Accounting extends DepartmentBase {
   public admins: string[] = [];
+  private static instance: Accounting;
 
-  constructor(id: string) {
+  private constructor(id: string) {
     super(id, 'Accounting')
+  }
+
+  // Singleton Pattern
+  static getInstance() {
+    if (Accounting.instance) {
+      return this.instance;
+    }
+    this.instance = new Accounting('d2');
+    return this.instance;
   }
 
   // Requiered method
@@ -119,7 +129,8 @@ it.printEmployeesDetails();
 it.mostRecentReport = 'Reporte final de año'; // assigne a value as a property
 console.log(it.mostRecentReport); // not call the function ()
 
-const account = new Accounting('d2');
+// const account = new Accounting('d2');
+const account = Accounting.getInstance();
 account.addEmployee('Bernard');
 account.printEmployeesDetails();
 account.addAdmin('Ruth');
